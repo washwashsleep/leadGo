@@ -1,26 +1,64 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>Leadgo by NodeBoys</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <style type="text/css">
-    #map { height: 600px; }
+    #map {
+        height: 600px;
+    }
     </style>
-  </head>
-  <body>
-    <div id="map"></div>
-<script type="text/javascript">
-var map = L.map('map').setView([23.802, 120.9979], 8);
-L.tileLayer('http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', {
-    attribution: 'Map data &copy; Google',
-    maxZoom: 18,
-    subdomains: '012'
-}).addTo(map);
-</script>
-  
-  </body>
-</html>
+</head>
 
+<body>
+    <div id="map"></div>
+    <script type="text/javascript">
+    
+    var map = L.map('map').setView([23.802, 120.9979], 10);
+    L.tileLayer('http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', {
+        attribution: 'Map data &copy; Google',
+        maxZoom: 18,
+        subdomains: '012'
+    }).addTo(map);
+    var route = L.featureGroup().addTo(map);
+
+    function changeRoute(latlng) {
+        var count = route.getLayers().length;
+        if (count == 0) {
+            L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'fa fa-dot-circle-o'
+                })
+            }).addTo(route);
+
+            L.polyline([latlng, latlng], {
+                color: 'red'
+            }).addTo(route);
+
+            L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'fa fa-motorcycle'
+                })
+            }).addTo(route);
+        } else {
+            map.setView(latlng);
+            //polyline
+            route.getLayers()[count - 2].addLatLng(latlng);
+            //end
+            route.getLayers()[count - 1].setLatLng(latlng);
+        }
+    }
+var temp = [23.802, 120.9979];
+    setInterval(function(){
+      temp[0] += Math.random();
+    temp[1] += Math.random(); 
+      changeRoute(temp); }, 1000);
+    </script>
+</body>
+
+</html>
