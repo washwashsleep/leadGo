@@ -13,9 +13,14 @@
         height: 600px;
     }
     
-    #map .fa {
+    #map .route-self {
         text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
         color: #E91E63;
+    }
+    
+    #map .route-leader {
+        text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
+        color: green;
     }
     </style>
 </head>
@@ -37,36 +42,61 @@
     var map = L.map('map', {
         zoomControl: false
     }).setView([25.043964, 121.51850], 12);
+
     L.tileLayer('http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', {
         attribution: 'Map data &copy; Google',
         maxZoom: 18,
         subdomains: '012',
         detectRetina: true
     }).addTo(map);
-    var route = L.featureGroup().addTo(map);
+    var route = L.featureGroup().addTo(map),
+        leader = L.geoJson([], {
+            style: {
+                weight: 3,
+                color: 'green',
+                opacity: 1
+            },
+            pointToLayer: function(feature, latlng) {
+                var name = feature.properties.name;
+                var icon = (name == '起點') ? 'fa-dot-circle-o' : 'fa-motorcycle';
+                iconAnchor = (name == "起點") ? [11, 12] : [16, 12];
+                return L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: 'fa fa-2x route-leader ' + icon,
+                        iconAnchor: [16, 12]
+                    })
+                });
+            }
+        }).addTo(map);
 
     function changeRoute(latlng) {
         var count = route.getLayers().length;
         if (count == 0) {
-            L.marker(latlng, {
+            var start = L.marker(latlng, {
                 icon: L.divIcon({
-                    className: 'fa fa-2x fa-dot-circle-o',
+                    className: 'fa fa-2x fa-dot-circle-o route-self',
                     iconAnchor: [11, 12]
                 })
             }).addTo(route);
+            start.feature = start.toGeoJSON();
+            start.feature.properties.name = "起點";
 
-            L.polyline([latlng, latlng], {
-              weight: 3,
+            var mid = L.polyline([latlng, latlng], {
+                weight: 3,
                 color: '#EC407A',
                 opacity: 1
             }).addTo(route);
+            mid.feature = mid.toGeoJSON();
+            mid.feature.properties.name = "路徑";
 
-            L.marker(latlng, {
+            var end = L.marker(latlng, {
                 icon: L.divIcon({
-                    className: 'fa fa-2x fa-motorcycle',
+                    className: 'fa fa-2x fa-motorcycle route-self',
                     iconAnchor: [16, 12]
                 })
             }).addTo(route);
+            end.feature = end.toGeoJSON();
+            end.feature.properties.name = "終點";
         } else {
             map.setView(latlng);
             //polyline
@@ -83,14 +113,22 @@
     // setInterval(function() {map.locate();}, 1000);
     var temp = [25.043964, 121.51850];
     setInterval(function() {
-temp[0] += getRandomArbitrary(-0.01, 0.01);
-    temp[1] += getRandomArbitrary(-0.01, 0.01); 
+        temp[0] += getRandomArbitrary(-0.01, 0.01);
+        temp[1] += getRandomArbitrary(-0.01, 0.01);
 
         changeRoute(temp);
+
+        socket.on('res', function(data) {
+            addLeader(JSON.parse(data.data.replace('get your data : ', '')));
+        });
     }, 1000);
 
     function getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
+    }
+
+    function addLeader(geojson) {
+        leader.clearLayers().addData(geojson);
     }
     </script>
 </body>
