@@ -118,8 +118,13 @@
 
         changeRoute(temp);
 
-        socket.on('res', function(data) {
-            addLeader(JSON.parse(data.data.replace('get your data : ', '')));
+        // socket.on('res', function(data) {
+        //     addLeader(JSON.parse(data.data.replace('get your data : ', '')));
+        // });
+
+        socket.emit('location', {
+            room: 'myRoom',
+            data: JSON.stringify(route.toGeoJSON())
         });
     }, 1000);
 
