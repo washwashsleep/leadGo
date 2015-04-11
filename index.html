@@ -55,8 +55,8 @@
     }
 var temp = [23.802, 120.9979];
     setInterval(function(){
-      temp[0] += Math.floor((Math.random() * 0.1) + 1);
-    temp[1] += Math.floor((Math.random() * 0.1) + 1); 
+      temp[0] += (Math.random() * 0.1);
+    temp[1] += (Math.random() * 0.1); 
       changeRoute(temp); }, 1000);
     </script>
 </body>
