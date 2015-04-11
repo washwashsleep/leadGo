@@ -14,6 +14,6 @@
 
 ##include
 
-* socket io
-* 第三方地圖串接
-* nodejs後台( simon決定
+* socket io (http://socket.io/)
+* 第三方地圖串接 (http://leafletjs.com/)
+* nodejs後台(http://expressjs.com/)
