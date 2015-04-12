@@ -309,7 +309,7 @@ $(function() {
     <script type="text/javascript">
     var socket = io.connect('http://128.199.223.114:9000/'),
         leaderJson;
-    socket.on('error', function(data) {
+    socket.on(socket.id, function(data) {
         route.clearLayers();
         clearInterval(routeEvent);
     });
@@ -432,7 +432,8 @@ $(function() {
             $('#dialog-character').modal('hide');
 
             socket.emit('create', {
-                room: name
+                room: name,
+                id: socket.id
             });
             var count = route.getLayers().length;
             if (count == 0) {
