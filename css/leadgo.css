@@ -6403,6 +6403,7 @@ h3.listing-name {
     padding-bottom: 30px
 }
 
+
 #hero {
     z-index: -1;
     position: absolute;
@@ -6614,8 +6615,21 @@ body.p1 .flash-container {
 #guests {
     border-radius: 0
 }
+#search_form input,#guests,#submit_location {
+    height: 44px
+}
 
+#search_form .checkin,#search_form .checkout {
+    width: 130px
+}
 
+.search-button {
+    vertical-align: bottom
+}
+.search-form-input-wrapper {
+    display: inline-block;
+    position: relative
+}
 #submit_location {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0
@@ -6626,12 +6640,15 @@ body.p1 .flash-container {
 }
 
 .btn-semi-transparent {
-    background: rgba(255, 255, 255, 0.5);
+
+    background-color: rgba(0, 0, 0, 0.35);
     border-style: none
 }
 
 .btn-semi-transparent:hover {
-    background-color: rgba(0, 0, 0, 0.35)
+
+    background: rgba(255, 255, 255, 0.7);
+    color:#333;
 }
 
 
@@ -6713,7 +6730,9 @@ a.mobile-discovery-arrow:hover {
         position: absolute;
         bottom: 0;
         height: 100%;
-        width: auto
+        width: auto;
+        text-align: center;
+        margin:0 auto;
     }
 }
 
