@@ -209,14 +209,7 @@
                 temp[1] += getRandomArbitrary(-0.01, 0.01);
 
                 changeRoute(temp);
-            }, 1000);
-
-            leaderJson = setInterval(function() {
-                socket.emit('location', {
-                    room: roomName,
-                    data: JSON.stringify(route.toGeoJSON())
-                });
-            }, 1000);
+            }, 1000);        
         } else {
             setInterval(function() {
                 temp[0] += getRandomArbitrary(-0.01, 0.01);
@@ -265,6 +258,12 @@
             if (count == 0) {
                 startRoute(name);
             }
+            leaderJson = setInterval(function() {
+                socket.emit('location', {
+                    room: name,
+                    data: JSON.stringify(route.toGeoJSON())
+                });
+            }, 1000);
 
             legend._container.style.display = '';
             document.getElementById('roomName-legend').textContent = name;
