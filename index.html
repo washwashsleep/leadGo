@@ -51,10 +51,10 @@
         margin-top: 35px;
     }
     
-
-    #dialog-character{
+    #dialog-character {
         padding-right: 0px !important;
     }
+    
     #dialog-character .input-group {
         margin-bottom: 10px;
     }
@@ -259,7 +259,10 @@
             $('#dialog-character').modal('hide');
 
             socket = io.connect('http://128.199.223.114:9000/');
-            startRoute(name);
+            var count = route.getLayers().length;
+            if (count == 0) {
+                startRoute(name);
+            }
 
             legend._container.style.display = '';
             document.getElementById('roomName-legend').textContent = name;
@@ -284,8 +287,10 @@
             socket.on('res', function(data) {
                 addLeader(JSON.parse(data.data.replace('get your data : ', '')));
             });
-
-            startRoute();
+            var count = route.getLayers().length;
+            if (count == 0) {
+                startRoute();
+            }
 
             legend._container.style.display = '';
             document.getElementById('roomName-legend').textContent = name;
