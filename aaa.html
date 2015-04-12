@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<!--[if lt IE 8]>
+
+<html lang="zh-TW"
+
+      xmlns:fb="http://ogp.me/ns/fb#"
+      class="ie">
+
+<![endif]-->
+<!--[if IE 8]>
+
+<html lang="zh-TW"
+
+      xmlns:fb="http://ogp.me/ns/fb#"
+      class="ie ie8">
+
+<![endif]-->
+<!--[if IE 9]>
+
+  <html lang="zh-TW"
+
+      xmlns:fb="http://ogp.me/ns/fb#"
+      class="ie ie9">
+
+<![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="zh-TW" xmlns:fb="http://ogp.me/ns/fb#">
+<!--<![endif]-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>LeadGo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http:////maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link href="./css/leadgo.css" media="all" rel="stylesheet" type="text/css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="image_src" href="https://a2.muscache.com/airbnb/static/logos/belo-200x200-4d851c5b28f61931bf1df28dd15e60ef.png">
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Airbnb">
+    <link rel="shortcut icon" sizes="76x76" type="image/x-icon" href="" />
+    <style type="text/css">
+    .leadGoMap {
+        background-color: #03A9F4;
+        margin: 8px;
+        font-family: 微軟正黑體;
+        position: relative;
+        padding: 0px !important;
+    }
+
+    #map {
+        height: calc(100vh - 16px);
+    }
+
+    #map .route-self {
+        text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
+        color: #E91E63;
+    }
+
+    #map .route-leader {
+        text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
+        color: #009688;
+    }
+
+    #leadgo,
+    #leaveRoom {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .create,
+    .go {
+        font-size: 100px;
+        width: 100%;
+    }
+
+    .modal.bs-example-modal-lg {
+        /*margin-top: 35px;*/
+    }
+
+    #dialog-character {
+        padding-right: 0px !important;
+    }
+
+    #dialog-character .input-group {
+        margin-bottom: 10px;
+    }
+
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+    }
+
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+
+    .legend {
+        line-height: 18px;
+        color: #555;
+    }
+
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+    }
+    .search-button{
+        height: 44px;
+    }
+    #submit_location1_name, #submit_location2_name{
+        height: 44px;
+    }
+    </style>
+</head>
+
+<body>
+<div class="leadGoMap" style="padding: 0px;">
+    <div id="map"></div>
+    <button type="button" id="leadgo" class="btn btn-theme" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin: 8px;">LeadGo</button>
+    <button type="button" id="leaveRoom" class="btn btn-theme" style="margin: 8px; display: none;">離開頻道</button>
+    <div id="dialog-character" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">選擇角色</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <input id="create-channel-name" type="text" class="form-control" placeholder="頻道名稱"><span class="input-group-btn">
+        <button id="create-channel" class="btn btn-default" type="button">創建</button>
+      </span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <input id="join-channel-name" type="text" class="form-control" placeholder="頻道名稱">
+                                    <span class="input-group-btn">
+        <button id="join-channel" class="btn btn-default" type="button">加入</button>
+      </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="leadGoInfo home_view v2 simple-header p1">
+    <img style="position: absolute;" src="img/logo.png"/>
+    <div id="header" class="leadgo-header new">
+        <div style="display:none !important;" class="header--sm show-sm">
+            <a href="#" data-prevent-default class="link-reset burger--sm"> <i class="icon icon-reorder icon-rausch"></i> </a>
+            <div class="title--sm text-center">
+                <a href="#" class="header-belo"></a>
+            </div>
+            <div class="action--sm"></div>
+            <nav class="nav--sm"></nav>
+            <div class="search-modal-container"></div>
+        </div>
+        <div class="regular-header regular-header--new clearfix hide-sm" id="new-header">
+            <div class="comp pull-left">
+                <a href="/" class="hdr-btn link-reset belo-container"> <i class="icon icon-pos--lower icon-white icon-airbnb-alt h2 show-login"></i> <i class="icon icon-pos--lower icon-white icon-airbnb show-logout"></i> </a>
+            </div>
+            <div class="comp pull-right help-trigger-wrapper no-border  "> <a class="hdr-btn help-toggle link-reset" href="#"> 幫助 </a>
+                <div class="panel tooltip tooltip-top-right drop-down-menu help-dropdown">
+                    <div class="search-bar--help hide">
+                        <form action="/help/search" class="search-form--help menu-item">
+                            <div class="input-addon">
+                                <input type="text" placeholder="搜索幫助中心" autocomplete="off" name="q" class="input-stem" />
+                                <input type="hidden" name="search_from" value="hdr" />
+                                <i class="btn btn-primary icon icon-search input-suffix form-submit--help"></i> </div>
+                        </form>
+                    </div>
+                    <a href="/help" class="visit-helpcenter-cta help-center-link menu-item hide"> 訪問幫助中心 &#187; </a>
+                    <div class="loading"></div>
+                    <a href="/help" class="all_faqs link-reset menu-item hide"> 查看所有常見問題 </a> </div>
+            </div>
+            <div class="comp pull-right show-login">
+                <a class="no-crawl hdr-btn link-reset" rel="nofollow" data-href="/dashboard">
+                    <div class="media-photo media-round normal-line-height user-profile-image"></div>
+                    <div class="value_name hide"></div>
+                </a>
+                <div class="panel tooltip tooltip-top-right drop-down-menu avatar-tooltip--new"> <a href="#" class="no-crawl link-reset menu-item" data-href="/trips" rel="no-follow">您的旅程</a> <a href="#" class="no-crawl link-reset menu-item" data-href="/wishlists/popular" rel="no-follow">Wish Lists</a> <a href="#" class="no-crawl link-reset menu-item" data-href="/users/edit" rel="no-follow">編輯個人資料</a> <a href="/invite" class="link-reset menu-item">邀請好友</a> <a href="#" class="no-crawl link-reset menu-item" data-href="/users/notifications" rel="no-follow">帳戶設定</a> <a href="#" class="no-crawl link-reset menu-item" data-href="/logout" rel="no-follow">登出</a> </div>
+            </div>
+            <div class="comp pull-right show-login">
+                <a class="no-crawl hdr-btn link-reset text-white" href="#" data-href="/inbox" rel="nofollow">
+                    <div class="inbox-icon-container text-center"> <i class="icon icon-envelope h3 icon-pos--lower icon-white"> <span class="text-hide hide">Inbox</span> </i> <i class="alert-count text-center fade">0</i> </div>
+                </a>
+            </div>
+            <div class="comp pull-right show-logout"> <a data-signup-modal="" data-header-view="true" href="/signup_login?redirect_params[action]=show&amp;redirect_params[controller]=homepages" class="hdr-btn link-reset" rel="nofollow"> 註冊 </a> </div>
+            <div class="comp pull-right show-logout"> <a data-login-modal="" href="/login?redirect_params[action]=show&amp;redirect_params[controller]=homepages" class="hdr-btn link-reset" rel="nofollow"> 登入 </a> </div>
+        </div>
+    </div>
+    <div class="p1-hero-wrapper shift-with-hiw js-p1-hero">
+        <div id="hero">
+            <ul class="list-unstyled" id="slideshow">
+                <li class="active"> <img alt="" src="https://farm4.staticflickr.com/3696/9071715381_503a07ce90_b.jpg" width="100%" /> </li>
+            </ul>
+        </div>
+        <div class="search-area text-center">
+            <div class="va-container va-container-v va-container-h">
+                <div class="intro-area va-middle">
+                    <h1 id='tagline' class='uppercase text-jumbo text-contrast row-space-1'> Lead Go </h1>
+                    <div class="col-sm-12 col-center">
+                        <div id='subtitle' class="h4 text-contrast row-space-4"> 不要浪費你的時間在聯繫。 </div>
+                        <a href="#" class="btn hide-sm btn-contrast btn-large btn-semi-transparent how-it-works"> 如何使用跟車系統 </a> </div>
+                    <div class="p1-hero-search-form">
+                        <div class="col-12">
+                                <div class="search-form-input-wrapper">
+                                    <div class="location-wrapper"><span class="input-placeholder-group"><input type="text" class="form-inline location input-large input-contrast" value="" placeholder="請輸入頻道名稱" id="submit_location1_name" ><input type="text" class="form-inline location input-large input-contrast" value="" placeholder="請輸入頻道名稱" id="submit_location2_name" ></span></div><span class="input-placeholder-group"></span>
+                                    <div class="select select-large">
+                                        <select id="guests" name="guests">
+                                         <option value="1">領頭車</option>
+                                         <option value="2">跟車者</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location2">加入</button>
+                                    <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location1">創建</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="trust hide-sm"> </div>
+        <div id="footer" class="container-brand-dark footer-surround footer-container">
+            <div class="footer-content-container page-container-responsive">
+                <hr class="footer-divider row-space-top-8 row-space-4 hide-sm">
+                <div class="social-media text-center">
+                    <h5 class="row-space-4 hide-sm">關注我們</h5>
+                    <ul class="unstyled list-layout list-inline" itemscope itemtype="http://schema.org/Organization">
+                        <link itemprop="url" href="https://www.airbnb.com.tw">
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-facebook'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-google-plus'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-weibo'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-twitter'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-linkedin'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-youtube'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-instagram'></i> </a>
+                        </li>
+                    </ul>
+                    <div id="copyright" class="row-space-top-2 text-muted"> &copy; Sleepsleepwash, Inc. </div>
+                </div>
+            </div>
+        </div>
+</body>
+<script>
+$(function() {
+    $('.leadGoMap').hide();
+    $('.leadGoInfo').show();
+    // $('#submit_location1').on('click', function(){
+    //     $('.leadGoMap').show();
+    //     $('.leadGoInfo').hide();
+    // })
+    // $('#submit_location2').on('click', function(){
+    //     $('.leadGoMap').show();
+    //     $('.leadGoInfo').hide();
+    // })
+    $(".select").change(function() {
+        $(".select option:selected").each(function() {
+            if ($(this).val() == 1) {
+                $('#submit_location2').hide();
+                $('#submit_location2_name').hide();
+                $('#submit_location1').show();
+                $('#submit_location1_name').show();
+            } else {
+                $('#submit_location1').hide();
+                $('#submit_location1_name').hide();
+                $('#submit_location2').show();
+                $('#submit_location2_name').show();
+            }
+        });
+    }).trigger("change");
+});
+</script>
+<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+    <script type="text/javascript">
+    var socket = io.connect('http://10.0.2.18:9000/'),
+        leaderJson;
+    socket.on('error', function(data) {
+        route.clearLayers();
+        clearInterval(routeEvent);
+    });
+    var map = L.map('map', {
+        zoomControl: false
+    }).setView([25.043964, 121.51850], 12);
+
+    L.tileLayer('http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', {
+        attribution: 'Map data &copy; Google',
+        maxZoom: 18,
+        subdomains: '012',
+        detectRetina: true
+    }).addTo(map);
+    var route = L.featureGroup().addTo(map),
+        leader = L.geoJson([], {
+            style: {
+                weight: 3,
+                color: '#009688',
+                opacity: 1
+            },
+            pointToLayer: function(feature, latlng) {
+                var name = feature.properties.name;
+                var icon = (name == '起點') ? 'fa-dot-circle-o' : 'fa-motorcycle';
+                iconAnchor = (name == "起點") ? [11, 12] : [16, 12];
+                return L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: 'fa fa-2x route-leader ' + icon,
+                        iconAnchor: [16, 12]
+                    })
+                });
+            }
+        }).addTo(map);
+
+    function changeRoute(latlng) {
+        var count = route.getLayers().length;
+        if (count == 0) {
+            var start = L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'fa fa-2x fa-dot-circle-o route-self',
+                    iconAnchor: [11, 12]
+                })
+            }).addTo(route);
+            start.feature = start.toGeoJSON();
+            start.feature.properties.name = "起點";
+
+            var mid = L.polyline([latlng, latlng], {
+                weight: 3,
+                color: '#EC407A',
+                opacity: 1
+            }).addTo(route);
+            mid.feature = mid.toGeoJSON();
+            mid.feature.properties.name = "路徑";
+
+            var end = L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'fa fa-2x fa-motorcycle route-self',
+                    iconAnchor: [16, 12]
+                })
+            }).addTo(route);
+            end.feature = end.toGeoJSON();
+            end.feature.properties.name = "終點";
+        } else {
+            map.setView(latlng);
+            //polyline
+            route.getLayers()[count - 2].addLatLng(latlng);
+            //end
+            route.getLayers()[count - 1].setLatLng(latlng);
+        }
+    }
+    map.on('locationfound', function(e) {
+        if (route.getLayers()[count - 1].getLatLng().distanceTo(e.latlng) > 10) {
+            changeRoute(e.latlng);
+        }
+    });
+    // setInterval(function() {map.locate();}, 1000);
+    var temp = [25.043964, 121.51850];
+    var routeEvent;
+
+    function startRoute(roomName) {
+        routeEvent = setInterval(function() {map.locate();}, 1000);
+    }
+
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function addLeader(geojson) {
+        leader.clearLayers().addData(geojson);
+    }
+
+    var legend = L.control({
+        position: 'bottomright'
+    });
+    legend.onAdd = function(map) {
+
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML += '<h4 id="roomName-legend"></h4>';
+        div.innerHTML += '<i style="background: #009688;"></i>領隊<br>';
+        div.innerHTML += '<i style="background: #E91E63;"></i>自己';
+        div.style.display = 'none';
+        return div;
+    };
+    legend.addTo(map);
+
+    document.getElementById('submit_location1').addEventListener("click", function() {
+        var name = document.getElementById('submit_location1_name').value;
+        if (name.trim() !== '') {
+            $('.leadGoMap').show();
+            $('.leadGoInfo').hide();
+            document.getElementById('leadgo').style.display = 'none';
+            document.getElementById('leaveRoom').style.display = '';
+            document.body.style.backgroundColor = '#009688';
+            document.getElementById('leadgo').className = 'btn btn-leader';
+            document.getElementById('leaveRoom').className = 'btn btn-leader';
+            $('#dialog-character').modal('hide');
+
+            socket.emit('create', {
+                room: name
+            });
+            var count = route.getLayers().length;
+            if (count == 0) {
+                startRoute(name);
+
+            }
+            leaderJson = setInterval(function() {
+                socket.emit('location', {
+                    room: name,
+                    data: JSON.stringify(route.toGeoJSON())
+                });
+            }, 1000);
+
+            legend._container.style.display = '';
+            document.getElementById('roomName-legend').textContent = name;
+        } else {
+            alert('請先輸入名稱');
+        }
+    });
+
+    document.getElementById('submit_location2').addEventListener("click", function() {
+        var name = document.getElementById('submit_location2_name').value;
+        if (name.trim() !== '') {
+            $('.leadGoMap').show();
+            $('.leadGoInfo').hide();
+            document.getElementById('leadgo').style.display = 'none';
+            document.getElementById('leaveRoom').style.display = '';
+            document.body.style.backgroundColor = '#E91E63';
+            document.getElementById('leadgo').className = 'btn btn-self';
+            document.getElementById('leaveRoom').className = 'btn btn-self';
+            $('#dialog-character').modal('hide');
+
+            socket.emit('join', {
+                room: name
+            });
+
+            socket.on('res', function(data) {
+                addLeader(JSON.parse(data.data.replace('get your data : ', '')));
+            });
+            var count = route.getLayers().length;
+            if (count == 0) {
+                startRoute();
+            }
+
+            legend._container.style.display = '';
+            document.getElementById('roomName-legend').textContent = name;
+        } else {
+            alert('請先輸入名稱');
+        }
+    });
+
+    document.getElementById('leaveRoom').addEventListener("click", function() {
+        var name = document.getElementById('join-channel-name').value;
+        document.getElementById('leadgo').style.display = '';
+        document.getElementById('leaveRoom').style.display = 'none';
+        document.body.style.backgroundColor = '#03A9F4';
+        document.getElementById('leadgo').className = 'btn btn-theme';
+        document.getElementById('leaveRoom').className = 'btn btn-theme';
+        socket.emit('leave', {
+            room: name
+        });
+        leader.clearLayers();
+        legend._container.style.display = 'none';
+        clearInterval(leaderJson);
+        window.location.href = '.';
+    });
+    </script>
+</html>
