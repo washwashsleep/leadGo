@@ -28,6 +28,7 @@
 <!--<![endif]-->
 
 <head>
+    <meta charset="UTF-8">
     <link rel="dns-prefetch" href="//maps.googleapis.com">
     <link rel="dns-prefetch" href="//maps.gstatic.com">
     <link rel="dns-prefetch" href="//mts0.googleapis.com">
@@ -47,9 +48,14 @@
     <meta property="og:image" content="">
     <meta property="og:locale" content="zh_TW">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <script src="js/leaflet.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <link rel="image_src" href="https://a2.muscache.com/airbnb/static/logos/belo-200x200-4d851c5b28f61931bf1df28dd15e60ef.png">
     <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Airbnb">
-
     <link rel="shortcut icon" sizes="76x76" type="image/x-icon" href="" />
 </head>
 
@@ -124,12 +130,19 @@
                         <a href="#" class="btn hide-sm btn-contrast btn-large btn-semi-transparent how-it-works"> 如何使用跟車系統 </a> </div>
                     <div class="p1-hero-search-form hide-sm">
                         <div class="col-12">
-                            <form id="search_form" method="get" >
-                                <div class="search-form-input-wrapper" >
-                                    <div class="location-wrapper" ><span class="input-placeholder-group" ><input type="text" class="form-inline location input-large input-contrast" aria-autocomplete="both" aria-owns="menu-1" autocomplete="off" value="" placeholder="請輸入頻道名稱" name="location" id="location" ></span></div><span class="input-placeholder-group"></span><div class="select select-large" ><select id="guests" name="guests">
+                            <form id="search_form" method="get">
+                                <div class="search-form-input-wrapper">
+                                    <div class="location-wrapper"><span class="input-placeholder-group"><input type="text" class="form-inline location input-large input-contrast" aria-autocomplete="both" aria-owns="menu-1" autocomplete="off" value="" placeholder="請輸入頻道名稱" name="location" id="location" ></span></div><span class="input-placeholder-group"></span>
+                                    <div class="select select-large">
+                                        <select id="guests" name="guests">
                                             <option value="1">領頭車</option>
-                                            <option value="2">跟車者</option></select>
-                                    </div><input type="hidden" name="source" value="bb" ><button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location">加入</button><input type="hidden" name="source" value="bb" ><button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location">創建</button>
+                                            <option value="2">跟車者</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="source" value="bb">
+                                    <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location2">加入</button>
+                                    <input type="hidden" name="source" value="bb">
+                                    <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location1">創建</button>
                             </form>
                             </div>
                         </div>
@@ -321,5 +334,20 @@
             </div>
         </div>
 </body>
+<script>
+$(function() {
+  $(".select").change(function() {
+    $(".select option:selected").each(function() {
+      if($(this).val() == 1){
+        $('#submit_location2').hide();
+        $('#submit_location1').show();
+      }else{
+        $('#submit_location1').hide();
+        $('#submit_location2').show();
+      }
+    });
+  }).trigger("change");
+});
+</script>
 
 </html>
