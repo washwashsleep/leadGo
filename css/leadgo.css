@@ -6239,7 +6239,7 @@ body.slideout .leadgo-header .header--sm .nav--sm .nav-mask--sm {
 (min-resolution: 192dpi) and (min-width: 768px),
 (min-resolution: 2dppx) and (min-width: 768px) {
     .simple-header .leadgo-header .header-belo {
-        background-image: url(logo)
+        background-image: url(../img/logo.png)
     }
 }
 
