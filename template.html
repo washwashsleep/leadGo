@@ -157,195 +157,10 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
-    <script type="text/javascript">
-    var socket, leaderJson;
-    var map = L.map('map', {
-        zoomControl: false
-    }).setView([25.043964, 121.51850], 12);
-
-    L.tileLayer('http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', {
-        attribution: 'Map data &copy; Google',
-        maxZoom: 18,
-        subdomains: '012',
-        detectRetina: true
-    }).addTo(map);
-    var route = L.featureGroup().addTo(map),
-        leader = L.geoJson([], {
-            style: {
-                weight: 3,
-                color: '#009688',
-                opacity: 1
-            },
-            pointToLayer: function(feature, latlng) {
-                var name = feature.properties.name;
-                var icon = (name == '起點') ? 'fa-dot-circle-o' : 'fa-motorcycle';
-                iconAnchor = (name == "起點") ? [11, 12] : [16, 12];
-                return L.marker(latlng, {
-                    icon: L.divIcon({
-                        className: 'fa fa-2x route-leader ' + icon,
-                        iconAnchor: [16, 12]
-                    })
-                });
-            }
-        }).addTo(map);
-
-    function changeRoute(latlng) {
-        var count = route.getLayers().length;
-        if (count == 0) {
-            var start = L.marker(latlng, {
-                icon: L.divIcon({
-                    className: 'fa fa-2x fa-dot-circle-o route-self',
-                    iconAnchor: [11, 12]
-                })
-            }).addTo(route);
-            start.feature = start.toGeoJSON();
-            start.feature.properties.name = "起點";
-
-            var mid = L.polyline([latlng, latlng], {
-                weight: 3,
-                color: '#EC407A',
-                opacity: 1
-            }).addTo(route);
-            mid.feature = mid.toGeoJSON();
-            mid.feature.properties.name = "路徑";
-
-            var end = L.marker(latlng, {
-                icon: L.divIcon({
-                    className: 'fa fa-2x fa-motorcycle route-self',
-                    iconAnchor: [16, 12]
-                })
-            }).addTo(route);
-            end.feature = end.toGeoJSON();
-            end.feature.properties.name = "終點";
-        } else {
-            map.setView(latlng);
-            //polyline
-            route.getLayers()[count - 2].addLatLng(latlng);
-            //end
-            route.getLayers()[count - 1].setLatLng(latlng);
-        }
-    }
-    map.on('locationfound', function(e) {
-        if (route.getLayers()[count - 1].getLatLng().distanceTo(e.latlng) > 10) {
-            changeRoute(e.latlng);
-        }
-    });
-    // setInterval(function() {map.locate();}, 1000);
-    var temp = [25.043964, 121.51850];
-
-    function startRoute(roomName) {
-        if (roomName) {
-            setInterval(function() {
-                temp[0] += getRandomArbitrary(-0.01, 0.01);
-                temp[1] += getRandomArbitrary(-0.01, 0.01);
-
-                changeRoute(temp);
-            }, 1000);
-        } else {
-            setInterval(function() {
-                temp[0] += getRandomArbitrary(-0.01, 0.01);
-                temp[1] += getRandomArbitrary(-0.01, 0.01);
-                changeRoute(temp);
-            }, 1000);
-        }
-    }
-
-    function getRandomArbitrary(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-
-    function addLeader(geojson) {
-        leader.clearLayers().addData(geojson);
-    }
-
-    var legend = L.control({
-        position: 'bottomright'
-    });
-    legend.onAdd = function(map) {
-
-        var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML += '<h4 id="roomName-legend"></h4>';
-        div.innerHTML += '<i style="background: #009688;"></i>領隊<br>';
-        div.innerHTML += '<i style="background: #E91E63;"></i>自己';
-        div.style.display = 'none';
-        return div;
-    };
-    legend.addTo(map);
-
-    $(function() {
-        // $('#leadgo').click();
-    });
-
-    document.getElementById('create-channel').addEventListener("click", function() {
-        var name = document.getElementById('create-channel-name').value;
-        if (name.trim() !== '') {
-            document.getElementById('leadgo').style.display = 'none';
-            document.getElementById('leaveRoom').style.display = '';
-            document.body.style.backgroundColor = '#009688';
-            $('#dialog-character').modal('hide');
-
-            socket = io.connect('http://128.199.223.114:9000/');
-            var count = route.getLayers().length;
-            if (count == 0) {
-                startRoute(name);
-            }
-            leaderJson = setInterval(function() {
-                socket.emit('location', {
-                    room: name,
-                    data: JSON.stringify(route.toGeoJSON())
-                });
-            }, 1000);
-
-            legend._container.style.display = '';
-            document.getElementById('roomName-legend').textContent = name;
-        } else {
-            alert('請先輸入名稱');
-        }
-    });
-
-    document.getElementById('join-channel').addEventListener("click", function() {
-        var name = document.getElementById('join-channel-name').value;
-        if (name.trim() !== '') {
-            document.getElementById('leadgo').style.display = 'none';
-            document.getElementById('leaveRoom').style.display = '';
-            document.body.style.backgroundColor = '#E91E63';
-            $('#dialog-character').modal('hide');
-
-            socket = io.connect('http://128.199.223.114:9000/');
-            socket.emit('join', {
-                room: name
-            });
-
-            socket.on('res', function(data) {
-                addLeader(JSON.parse(data.data.replace('get your data : ', '')));
-            });
-            var count = route.getLayers().length;
-            if (count == 0) {
-                startRoute();
-            }
-
-            legend._container.style.display = '';
-            document.getElementById('roomName-legend').textContent = name;
-        } else {
-            alert('請先輸入名稱');
-        }
-    });
-
-    document.getElementById('leaveRoom').addEventListener("click", function() {
-        var name = document.getElementById('join-channel-name').value;
-        document.getElementById('leadgo').style.display = '';
-        document.getElementById('leaveRoom').style.display = 'none';
-        socket.emit('leave', {
-            room: name
-        });
-        leader.clearLayers();
-        legend._container.style.display = 'none';
-        clearInterval(leaderJson);
-    });
-    </script>
+    
 </div>
 <div class="leadGoInfo home_view v2 simple-header p1">
+    <img style="position: absolute;" src="img/logo.png"/>
     <div id="header" class="leadgo-header new">
         <div class="header--sm show-sm">
             <a href="#" data-prevent-default class="link-reset burger--sm"> <i class="icon icon-reorder icon-rausch"></i> </a>
@@ -406,16 +221,14 @@
                     <div class="p1-hero-search-form">
                         <div class="col-12">
                                 <div class="search-form-input-wrapper">
-                                    <div class="location-wrapper"><span class="input-placeholder-group"><input type="text" class="form-inline location input-large input-contrast" aria-autocomplete="both" aria-owns="menu-1" autocomplete="off" value="" placeholder="請輸入頻道名稱" name="location" id="location" ></span></div><span class="input-placeholder-group"></span>
+                                    <div class="location-wrapper"><span class="input-placeholder-group"><input type="text" class="form-inline location input-large input-contrast" value="" placeholder="請輸入頻道名稱" id="submit_location1_name" ><input type="text" class="form-inline location input-large input-contrast" value="" placeholder="請輸入頻道名稱" id="submit_location2_name" ></span></div><span class="input-placeholder-group"></span>
                                     <div class="select select-large">
                                         <select id="guests" name="guests">
                                          <option value="1">領頭車</option>
                                          <option value="2">跟車者</option>
                                         </select>
                                     </div>
-                                    <input type="hidden" name="source" value="bb">
                                     <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location2">加入</button>
-                                    <input type="hidden" name="source" value="bb">
                                     <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location1">創建</button>
                             </div>
                         </div>
@@ -612,25 +425,216 @@ $(function() {
     $('.leadGoMap').hide();
     $('.leadGoInfo').show();
     $('#submit_location1').on('click', function(){
-        $('.leadGoMap').show(function(){$('#leadgo').click();});
+        $('.leadGoMap').show(/*function(){$('#leadgo').click();}*/);
         $('.leadGoInfo').hide();
     })
     $('#submit_location2').on('click', function(){
-        $('.leadGoMap').show(function(){$('#leadgo').click();});
+        $('.leadGoMap').show(/*function(){$('#leadgo').click();}*/);
         $('.leadGoInfo').hide();
     })
     $(".select").change(function() {
         $(".select option:selected").each(function() {
             if ($(this).val() == 1) {
                 $('#submit_location2').hide();
+                $('#submit_location2_name').hide();
                 $('#submit_location1').show();
+                $('#submit_location1_name').show();
             } else {
                 $('#submit_location1').hide();
+                $('#submit_location1_name').hide();
                 $('#submit_location2').show();
+                $('#submit_location2_name').show();
             }
         });
     }).trigger("change");
 });
 </script>
+<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+    <script type="text/javascript">
+    var socket, leaderJson;
+    var map = L.map('map', {
+        zoomControl: false
+    }).setView([25.043964, 121.51850], 12);
 
+    L.tileLayer('http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', {
+        attribution: 'Map data &copy; Google',
+        maxZoom: 18,
+        subdomains: '012',
+        detectRetina: true
+    }).addTo(map);
+    var route = L.featureGroup().addTo(map),
+        leader = L.geoJson([], {
+            style: {
+                weight: 3,
+                color: '#009688',
+                opacity: 1
+            },
+            pointToLayer: function(feature, latlng) {
+                var name = feature.properties.name;
+                var icon = (name == '起點') ? 'fa-dot-circle-o' : 'fa-motorcycle';
+                iconAnchor = (name == "起點") ? [11, 12] : [16, 12];
+                return L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: 'fa fa-2x route-leader ' + icon,
+                        iconAnchor: [16, 12]
+                    })
+                });
+            }
+        }).addTo(map);
+
+    function changeRoute(latlng) {
+        var count = route.getLayers().length;
+        if (count == 0) {
+            var start = L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'fa fa-2x fa-dot-circle-o route-self',
+                    iconAnchor: [11, 12]
+                })
+            }).addTo(route);
+            start.feature = start.toGeoJSON();
+            start.feature.properties.name = "起點";
+
+            var mid = L.polyline([latlng, latlng], {
+                weight: 3,
+                color: '#EC407A',
+                opacity: 1
+            }).addTo(route);
+            mid.feature = mid.toGeoJSON();
+            mid.feature.properties.name = "路徑";
+
+            var end = L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'fa fa-2x fa-motorcycle route-self',
+                    iconAnchor: [16, 12]
+                })
+            }).addTo(route);
+            end.feature = end.toGeoJSON();
+            end.feature.properties.name = "終點";
+        } else {
+            map.setView(latlng);
+            //polyline
+            route.getLayers()[count - 2].addLatLng(latlng);
+            //end
+            route.getLayers()[count - 1].setLatLng(latlng);
+        }
+    }
+    map.on('locationfound', function(e) {
+        if (route.getLayers()[count - 1].getLatLng().distanceTo(e.latlng) > 10) {
+            changeRoute(e.latlng);
+        }
+    });
+    // setInterval(function() {map.locate();}, 1000);
+    var temp = [25.043964, 121.51850];
+
+    function startRoute(roomName) {
+        if (roomName) {
+            setInterval(function() {
+                temp[0] += getRandomArbitrary(-0.01, 0.01);
+                temp[1] += getRandomArbitrary(-0.01, 0.01);
+
+                changeRoute(temp);
+            }, 1000);
+        } else {
+            setInterval(function() {
+                temp[0] += getRandomArbitrary(-0.01, 0.01);
+                temp[1] += getRandomArbitrary(-0.01, 0.01);
+                changeRoute(temp);
+            }, 1000);
+        }
+    }
+
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function addLeader(geojson) {
+        leader.clearLayers().addData(geojson);
+    }
+
+    var legend = L.control({
+        position: 'bottomright'
+    });
+    legend.onAdd = function(map) {
+
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML += '<h4 id="roomName-legend"></h4>';
+        div.innerHTML += '<i style="background: #009688;"></i>領隊<br>';
+        div.innerHTML += '<i style="background: #E91E63;"></i>自己';
+        div.style.display = 'none';
+        return div;
+    };
+    legend.addTo(map);
+
+    $(function() {
+        // $('#leadgo').click();
+    });
+
+    document.getElementById('submit_location1').addEventListener("click", function() {
+        var name = document.getElementById('submit_location1_name').value;
+        if (name.trim() !== '') {
+            document.getElementById('leadgo').style.display = 'none';
+            document.getElementById('leaveRoom').style.display = '';
+            document.body.style.backgroundColor = '#009688';
+            $('#dialog-character').modal('hide');
+
+            socket = io.connect('http://128.199.223.114:9000/');
+            var count = route.getLayers().length;
+            if (count == 0) {
+                startRoute(name);
+            }
+            leaderJson = setInterval(function() {
+                socket.emit('location', {
+                    room: name,
+                    data: JSON.stringify(route.toGeoJSON())
+                });
+            }, 1000);
+
+            legend._container.style.display = '';
+            document.getElementById('roomName-legend').textContent = name;
+        } else {
+            alert('請先輸入名稱');
+        }
+    });
+
+    document.getElementById('submit_location2').addEventListener("click", function() {
+        var name = document.getElementById('submit_location2_name').value;
+        if (name.trim() !== '') {
+            document.getElementById('leadgo').style.display = 'none';
+            document.getElementById('leaveRoom').style.display = '';
+            document.body.style.backgroundColor = '#E91E63';
+            $('#dialog-character').modal('hide');
+
+            socket = io.connect('http://128.199.223.114:9000/');
+            socket.emit('join', {
+                room: name
+            });
+
+            socket.on('res', function(data) {
+                addLeader(JSON.parse(data.data.replace('get your data : ', '')));
+            });
+            var count = route.getLayers().length;
+            if (count == 0) {
+                startRoute();
+            }
+
+            legend._container.style.display = '';
+            document.getElementById('roomName-legend').textContent = name;
+        } else {
+            alert('請先輸入名稱');
+        }
+    });
+
+    document.getElementById('leaveRoom').addEventListener("click", function() {
+        window.location.href = 'template.html';
+        var name = document.getElementById('join-channel-name').value;
+        document.getElementById('leadgo').style.display = '';
+        document.getElementById('leaveRoom').style.display = 'none';
+        socket.emit('leave', {
+            room: name
+        });
+        leader.clearLayers();
+        legend._container.style.display = 'none';
+        clearInterval(leaderJson);
+    });
+    </script>
 </html>
