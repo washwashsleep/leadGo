@@ -33,8 +33,7 @@
     <link rel="dns-prefetch" href="//maps.gstatic.com">
     <link rel="dns-prefetch" href="//mts0.googleapis.com">
     <link rel="dns-prefetch" href="//mts1.googleapis.com">
-    <link href="./css/leadgo.css" media="all" rel="stylesheet" type="text/css" />
-    <!-- <link href="./airbnb2.css" media="screen" rel="stylesheet" type="text/css" /> -->
+
     <meta id="csrf-param-meta-tag" name="csrf-param" content="authenticity_token" />
     <meta id="csrf-token-meta-tag" name="csrf-token" content="" />
     <title>LeadGo</title>
@@ -51,6 +50,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/leaflet.css" />
+    <link href="./css/leadgo.css" media="all" rel="stylesheet" type="text/css" />
     <script src="js/leaflet.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -128,18 +128,16 @@
                     <div class="col-sm-12 col-center">
                         <div id='subtitle' class="h4 text-contrast row-space-4"> 從超過190個國家的當地人租住獨一無二的家。 </div>
                         <a href="#" class="btn hide-sm btn-contrast btn-large btn-semi-transparent how-it-works"> 如何使用跟車系統 </a> </div>
-                    <div class="p1-hero-search-form hide-sm">
+                    <div class="p1-hero-search-form">
                         <div class="col-12">
                             <form id="search_form" method="get">
                                 <div class="search-form-input-wrapper">
-                                    <div class="location-wrapper"><span class="input-placeholder-group"><input type="text" class="form-inline location input-large input-contrast" aria-autocomplete="both" aria-owns="menu-1" autocomplete="off" value="" placeholder="請輸入頻道名稱" name="location" id="location" ></span></div><span class="input-placeholder-group"></span>
-                                    <div class="select select-large">
+                                    <div class="location-wrapper"><span class="input-placeholder-group"><input type="text" class="form-inline location input-large input-contrast" aria-autocomplete="both" aria-owns="menu-1" autocomplete="off" value="" placeholder="請輸入頻道名稱" name="location" id="location" ></span></div><span class="input-placeholder-group"></span><div class="select select-large">
                                         <select id="guests" name="guests">
                                             <option value="1">領頭車</option>
                                             <option value="2">跟車者</option>
                                         </select>
-                                    </div>
-                                    <input type="hidden" name="source" value="bb">
+                                    </div><input type="hidden" name="source" value="bb">
                                     <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location2">加入</button>
                                     <input type="hidden" name="source" value="bb">
                                     <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location1">創建</button>

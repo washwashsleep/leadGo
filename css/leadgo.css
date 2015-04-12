@@ -587,7 +587,7 @@ a.text-muted:focus {
 }
 
 .text-contrast {
-    color: #fff
+    color: #fff!important;
 }
 
 .text-truncate {
@@ -3721,6 +3721,7 @@ input[type="checkbox"]:checked:before {
     select {
         font-size: 16px
     }
+
 }
 
 .icon {
@@ -4795,6 +4796,7 @@ input[type="checkbox"]:checked:before {
     .sidenav-item {
         font-size: 15px
     }
+    #location{width:135px!important}
 }
 
 table {
