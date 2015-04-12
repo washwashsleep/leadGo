@@ -13,7 +13,11 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <style type="text/css">
     body {
-        background-color: #009688;
+        background-color: #03A9F4;
+        margin: 8px;
+        font-family: 微軟正黑體;
+        position: relative;
+        padding: 0px !important;
     }
     
     #map {
@@ -30,36 +34,90 @@
         color: #009688;
     }
     
-    .leadgo{
+    #leadgo,
+    #leaveRoom {
         position: absolute;
         top: 0;
-        right:0;
+        right: 0;
     }
-    .create, .go{
+    
+    .create,
+    .go {
         font-size: 100px;
         width: 100%;
     }
-    .modal.bs-example-modal-lg{
+    
+    .modal.bs-example-modal-lg {
         margin-top: 35px;
+    }
+    
+
+    #dialog-character{
+        padding-right: 0px !important;
+    }
+    #dialog-character .input-group {
+        margin-bottom: 10px;
+    }
+    
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+    }
+    
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+    
+    .legend {
+        line-height: 18px;
+        color: #555;
+    }
+    
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
     }
     </style>
 </head>
 
-<body>
+<body style="padding: 0px;">
     <div id="map"></div>
-    <button type="button" class="leadgo btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">LeadGo</button>
-    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <button type="button" id="leadgo" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin: 8px;">LeadGo</button>
+    <button type="button" id="leaveRoom" class="btn btn-primary" style="margin: 8px; display: none;">離開頻道</button>
+    <div id="dialog-character" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">LeadGo</h4>
+                        <h4 class="modal-title">選擇角色</h4>
                     </div>
                     <div class="modal-body">
-                        <button type="button" class="create btn btn-success">Lead</button>
-                        <p></p>
-                        <button type="button" class="go btn btn-info">Go</button>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <input id="create-channel-name" type="text" class="form-control" placeholder="頻道名稱"><span class="input-group-btn">
+        <button id="create-channel" class="btn btn-default" type="button">創建</button>
+      </span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <input id="join-channel-name" type="text" class="form-control" placeholder="頻道名稱">
+                                    <span class="input-group-btn">
+        <button id="join-channel" class="btn btn-default" type="button">加入</button>
+      </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                     </div>
@@ -68,18 +126,8 @@
         </div>
     </div>
     <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
-    <script>
-    // var socket = io.connect('http://127.0.0.1:9000/');
-    var socket = io.connect('http://128.199.223.114:9000/');
-
-    // socket.emit('location', {
-    //     my: 'data'
-    // });
-    socket.on('res', function(data) {
-        console.log(data);
-    });
-    </script>
     <script type="text/javascript">
+    var socket;
     var map = L.map('map', {
         zoomControl: false
     }).setView([25.043964, 121.51850], 12);
@@ -153,24 +201,27 @@
     });
     // setInterval(function() {map.locate();}, 1000);
     var temp = [25.043964, 121.51850];
-    setInterval(function() {
-        temp[0] += getRandomArbitrary(-0.01, 0.01);
-        temp[1] += getRandomArbitrary(-0.01, 0.01);
 
-        changeRoute(temp);
+    function startRoute(roomName) {
+        if (roomName) {
+            setInterval(function() {
+                temp[0] += getRandomArbitrary(-0.01, 0.01);
+                temp[1] += getRandomArbitrary(-0.01, 0.01);
 
-        // socket.on('res', function(data) {
-        //     addLeader(JSON.parse(data.data.replace('get your data : ', '')));
-        // });
+                changeRoute(temp);
 
-        socket.emit('location', {
-            room: 'myRoom',
-            data: JSON.stringify(route.toGeoJSON())
-        });
-    }, 1000);
-
-    function startRoute() {
-
+                socket.emit('location', {
+                    room: roomName,
+                    data: JSON.stringify(route.toGeoJSON())
+                });
+            }, 1000);
+        } else {
+            setInterval(function() {
+                temp[0] += getRandomArbitrary(-0.01, 0.01);
+                temp[1] += getRandomArbitrary(-0.01, 0.01);
+                changeRoute(temp);
+            }, 1000);
+        }
     }
 
     function getRandomArbitrary(min, max) {
@@ -180,8 +231,79 @@
     function addLeader(geojson) {
         leader.clearLayers().addData(geojson);
     }
+
+    var legend = L.control({
+        position: 'bottomright'
+    });
+    legend.onAdd = function(map) {
+
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML += '<h4 id="roomName-legend"></h4>';
+        div.innerHTML += '<i style="background: #009688;"></i>領隊<br>';
+        div.innerHTML += '<i style="background: #E91E63;"></i>自己';
+        div.style.display = 'none';
+        return div;
+    };
+    legend.addTo(map);
+
     $(function() {
-        $('.leadgo').click();
+        $('#leadgo').click();
+    });
+
+    document.getElementById('create-channel').addEventListener("click", function() {
+        var name = document.getElementById('create-channel-name').value;
+        if (name.trim() !== '') {
+            document.getElementById('leadgo').style.display = 'none';
+            document.getElementById('leaveRoom').style.display = '';
+            document.body.style.backgroundColor = '#009688';
+            $('#dialog-character').modal('hide');
+
+            socket = io.connect('http://128.199.223.114:9000/');
+            startRoute(name);
+
+            legend._container.style.display = '';
+            document.getElementById('roomName-legend').textContent = name;
+        } else {
+            alert('請先輸入名稱');
+        }
+    });
+
+    document.getElementById('join-channel').addEventListener("click", function() {
+        var name = document.getElementById('join-channel-name').value;
+        if (name.trim() !== '') {
+            document.getElementById('leadgo').style.display = 'none';
+            document.getElementById('leaveRoom').style.display = '';
+            document.body.style.backgroundColor = '#E91E63';
+            $('#dialog-character').modal('hide');
+
+            socket = io.connect('http://128.199.223.114:9000/');
+            socket.emit('join', {
+                room: name
+            });
+
+            socket.on('res', function(data) {
+                addLeader(JSON.parse(data.data.replace('get your data : ', '')));
+            });
+
+            startRoute();
+
+            legend._container.style.display = '';
+            document.getElementById('roomName-legend').textContent = name;
+        } else {
+            alert('請先輸入名稱');
+        }
+    });
+
+    document.getElementById('leaveRoom').addEventListener("click", function() {
+        var name = document.getElementById('join-channel-name').value;
+        document.getElementById('leadgo').style.display = '';
+        document.getElementById('leaveRoom').style.display = 'none';
+        socket.emit('leave', {
+            room: name
+        });
+        leader.clearLayers();
+        legend._container.style.display = 'none';
+    });
     </script>
 </body>
 
