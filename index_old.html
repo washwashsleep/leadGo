@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Leadgo by NodeBoys</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http:////maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    body {
+        background-color: #03A9F4;
+        margin: 8px;
+        font-family: 微軟正黑體;
+        position: relative;
+        padding: 0px !important;
+    }
+    
+    #map {
+        height: calc(100vh - 16px);
+    }
+    
+    #map .route-self {
+        text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
+        color: #E91E63;
+    }
+    
+    #map .route-leader {
+        text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
+        color: #009688;
+    }
+    
+    #leadgo,
+    #leaveRoom {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    
+    .create,
+    .go {
+        font-size: 100px;
+        width: 100%;
+    }
+    
+    .modal.bs-example-modal-lg {
+        margin-top: 35px;
+    }
+    
+    #dialog-character {
+        padding-right: 0px !important;
+    }
+    
+    #dialog-character .input-group {
+        margin-bottom: 10px;
+    }
+    
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+    }
+    
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+    
+    .legend {
+        line-height: 18px;
+        color: #555;
+    }
+    
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+    }
+    
+    .btn-theme {
+        border-color: #03A9F4;
+        background-color: #fff;
+        color: #03A9F4
+    }
+    
+    .btn-theme:hover,
+    .btn-theme:focus,
+    .btn-theme:active,
+    .btn-theme.active {
+        background-color: #03A9F4;
+        color: #fff
+    }
+    
+    .btn-leader {
+        border-color: #009688;
+        background-color: #fff;
+        color: #009688
+    }
+    
+    .btn-leader:hover,
+    .btn-leader:focus,
+    .btn-leader:active,
+    .btn-leader.active {
+        background-color: #009688;
+        color: #fff
+    }
+    
+    .btn-self {
+        border-color: #E91E63;
+        background-color: #fff;
+        color: #E91E63
+    }
+    
+    .btn-self:hover,
+    .btn-self:focus,
+    .btn-self:active,
+    .btn-self.active {
+        background-color: #E91E63;
+        color: #fff
+    }
+    </style>
+</head>
+
+<body style="padding: 0px;">
+    <div id="map"></div>
+    <button type="button" id="leadgo" class="btn btn-theme" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin: 8px;">LeadGo</button>
+    <button type="button" id="leaveRoom" class="btn btn-theme" style="margin: 8px; display: none;">離開頻道</button>
+    <div id="dialog-character" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">選擇角色</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <input id="create-channel-name" type="text" class="form-control" placeholder="頻道名稱"><span class="input-group-btn">
+        <button id="create-channel" class="btn btn-default" type="button">創建</button>
+      </span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <input id="join-channel-name" type="text" class="form-control" placeholder="頻道名稱">
+                                    <span class="input-group-btn">
+        <button id="join-channel" class="btn btn-default" type="button">加入</button>
+      </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+    <script type="text/javascript">
+    var socket = io.connect('http://10.0.2.18:9000/'),
+        leaderJson;
+    socket.on('error', function(data) {
+        route.clearLayers();
+        clearInterval(routeEvent);
+    });
+    var map = L.map('map', {
+        zoomControl: false
+    }).setView([25.043964, 121.51850], 12);
+
+    L.tileLayer('http://mt{s}.google.com/vt/x={x}&y={y}&z={z}', {
+        attribution: 'Map data &copy; Google',
+        maxZoom: 18,
+        subdomains: '012',
+        detectRetina: true
+    }).addTo(map);
+    var route = L.featureGroup().addTo(map),
+        leader = L.geoJson([], {
+            style: {
+                weight: 3,
+                color: '#009688',
+                opacity: 1
+            },
+            pointToLayer: function(feature, latlng) {
+                var name = feature.properties.name;
+                var icon = (name == '起點') ? 'fa-dot-circle-o' : 'fa-motorcycle';
+                iconAnchor = (name == "起點") ? [11, 12] : [16, 12];
+                return L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: 'fa fa-2x route-leader ' + icon,
+                        iconAnchor: [16, 12]
+                    })
+                });
+            }
+        }).addTo(map);
+
+    function changeRoute(latlng) {
+        var count = route.getLayers().length;
+        if (count == 0) {
+            var start = L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'fa fa-2x fa-dot-circle-o route-self',
+                    iconAnchor: [11, 12]
+                })
+            }).addTo(route);
+            start.feature = start.toGeoJSON();
+            start.feature.properties.name = "起點";
+
+            var mid = L.polyline([latlng, latlng], {
+                weight: 3,
+                color: '#EC407A',
+                opacity: 1
+            }).addTo(route);
+            mid.feature = mid.toGeoJSON();
+            mid.feature.properties.name = "路徑";
+
+            var end = L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'fa fa-2x fa-motorcycle route-self',
+                    iconAnchor: [16, 12]
+                })
+            }).addTo(route);
+            end.feature = end.toGeoJSON();
+            end.feature.properties.name = "終點";
+        } else {
+            map.setView(latlng);
+            //polyline
+            route.getLayers()[count - 2].addLatLng(latlng);
+            //end
+            route.getLayers()[count - 1].setLatLng(latlng);
+        }
+    }
+    map.on('locationfound', function(e) {
+        if (route.getLayers()[count - 1].getLatLng().distanceTo(e.latlng) > 10) {
+            changeRoute(e.latlng);
+        }
+    });
+    // setInterval(function() {map.locate();}, 1000);
+    var temp = [25.043964, 121.51850];
+    var routeEvent;
+
+    function startRoute(roomName) {
+        routeEvent = setInterval(function() {
+            temp[0] += getRandomArbitrary(-0.01, 0.01);
+            temp[1] += getRandomArbitrary(-0.01, 0.01);
+            changeRoute(temp);
+        }, 1000);
+    }
+
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function addLeader(geojson) {
+        leader.clearLayers().addData(geojson);
+    }
+
+    var legend = L.control({
+        position: 'bottomright'
+    });
+    legend.onAdd = function(map) {
+
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML += '<h4 id="roomName-legend"></h4>';
+        div.innerHTML += '<i style="background: #009688;"></i>領隊<br>';
+        div.innerHTML += '<i style="background: #E91E63;"></i>自己';
+        div.style.display = 'none';
+        return div;
+    };
+    legend.addTo(map);
+
+    $(function() {
+        $('#leadgo').click();
+    });
+
+    document.getElementById('create-channel').addEventListener("click", function() {
+        var name = document.getElementById('create-channel-name').value;
+        if (name.trim() !== '') {
+            document.getElementById('leadgo').style.display = 'none';
+            document.getElementById('leaveRoom').style.display = '';
+            document.body.style.backgroundColor = '#009688';
+            document.getElementById('leadgo').className = 'btn btn-leader';
+            document.getElementById('leaveRoom').className = 'btn btn-leader';
+            $('#dialog-character').modal('hide');
+
+            socket.emit('create', {
+                room: name
+            });
+            var count = route.getLayers().length;
+            if (count == 0) {
+                startRoute(name);
+
+            }
+            leaderJson = setInterval(function() {
+                socket.emit('location', {
+                    room: name,
+                    data: JSON.stringify(route.toGeoJSON())
+                });
+            }, 1000);
+
+            legend._container.style.display = '';
+            document.getElementById('roomName-legend').textContent = name;
+        } else {
+            alert('請先輸入名稱');
+        }
+    });
+
+    document.getElementById('join-channel').addEventListener("click", function() {
+        var name = document.getElementById('join-channel-name').value;
+        if (name.trim() !== '') {
+            document.getElementById('leadgo').style.display = 'none';
+            document.getElementById('leaveRoom').style.display = '';
+            document.body.style.backgroundColor = '#E91E63';
+            document.getElementById('leadgo').className = 'btn btn-self';
+            document.getElementById('leaveRoom').className = 'btn btn-self';
+            $('#dialog-character').modal('hide');
+
+            socket.emit('join', {
+                room: name
+            });
+
+            socket.on('res', function(data) {
+                addLeader(JSON.parse(data.data.replace('get your data : ', '')));
+            });
+            var count = route.getLayers().length;
+            if (count == 0) {
+                startRoute();
+            }
+
+            legend._container.style.display = '';
+            document.getElementById('roomName-legend').textContent = name;
+        } else {
+            alert('請先輸入名稱');
+        }
+    });
+
+    document.getElementById('leaveRoom').addEventListener("click", function() {
+        var name = document.getElementById('join-channel-name').value;
+        document.getElementById('leadgo').style.display = '';
+        document.getElementById('leaveRoom').style.display = 'none';
+        document.body.style.backgroundColor = '#03A9F4';
+        document.getElementById('leadgo').className = 'btn btn-theme';
+        document.getElementById('leaveRoom').className = 'btn btn-theme';
+        socket.emit('leave', {
+            room: name
+        });
+        leader.clearLayers();
+        legend._container.style.display = 'none';
+        clearInterval(leaderJson);
+    });
+    </script>
+</body>
+
+</html>

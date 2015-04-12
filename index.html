@@ -1,64 +1,95 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<!--[if lt IE 8]>
+
+<html lang="zh-TW"
+
+      xmlns:fb="http://ogp.me/ns/fb#"
+      class="ie">
+
+<![endif]-->
+<!--[if IE 8]>
+
+<html lang="zh-TW"
+
+      xmlns:fb="http://ogp.me/ns/fb#"
+      class="ie ie8">
+
+<![endif]-->
+<!--[if IE 9]>
+
+  <html lang="zh-TW"
+
+      xmlns:fb="http://ogp.me/ns/fb#"
+      class="ie ie9">
+
+<![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="zh-TW" xmlns:fb="http://ogp.me/ns/fb#">
+<!--<![endif]-->
 
 <head>
     <meta charset="UTF-8">
-    <title>Leadgo by NodeBoys</title>
+    <title>LeadGo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http:////maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link href="./css/leadgo.css" media="all" rel="stylesheet" type="text/css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="image_src" href="https://a2.muscache.com/airbnb/static/logos/belo-200x200-4d851c5b28f61931bf1df28dd15e60ef.png">
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Airbnb">
+    <link rel="shortcut icon" sizes="76x76" type="image/x-icon" href="" />
     <style type="text/css">
-    body {
+    .leadGoMap {
         background-color: #03A9F4;
         margin: 8px;
         font-family: 微軟正黑體;
         position: relative;
         padding: 0px !important;
     }
-    
+
     #map {
         height: calc(100vh - 16px);
     }
-    
+
     #map .route-self {
         text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
         color: #E91E63;
     }
-    
+
     #map .route-leader {
         text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
         color: #009688;
     }
-    
+
     #leadgo,
     #leaveRoom {
         position: absolute;
         top: 0;
         right: 0;
     }
-    
+
     .create,
     .go {
         font-size: 100px;
         width: 100%;
     }
-    
+
     .modal.bs-example-modal-lg {
-        margin-top: 35px;
+        /*margin-top: 35px;*/
     }
-    
+
     #dialog-character {
         padding-right: 0px !important;
     }
-    
+
     #dialog-character .input-group {
         margin-bottom: 10px;
     }
-    
+
     .info {
         padding: 6px 8px;
         font: 14px/16px Arial, Helvetica, sans-serif;
@@ -67,17 +98,17 @@
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         border-radius: 5px;
     }
-    
+
     .info h4 {
         margin: 0 0 5px;
         color: #777;
     }
-    
+
     .legend {
         line-height: 18px;
         color: #555;
     }
-    
+
     .legend i {
         width: 18px;
         height: 18px;
@@ -85,52 +116,17 @@
         margin-right: 8px;
         opacity: 0.7;
     }
-    
-    .btn-theme {
-        border-color: #03A9F4;
-        background-color: #fff;
-        color: #03A9F4
+    .search-button{
+        height: 44px;
     }
-    
-    .btn-theme:hover,
-    .btn-theme:focus,
-    .btn-theme:active,
-    .btn-theme.active {
-        background-color: #03A9F4;
-        color: #fff
-    }
-    
-    .btn-leader {
-        border-color: #009688;
-        background-color: #fff;
-        color: #009688
-    }
-    
-    .btn-leader:hover,
-    .btn-leader:focus,
-    .btn-leader:active,
-    .btn-leader.active {
-        background-color: #009688;
-        color: #fff
-    }
-    
-    .btn-self {
-        border-color: #E91E63;
-        background-color: #fff;
-        color: #E91E63
-    }
-    
-    .btn-self:hover,
-    .btn-self:focus,
-    .btn-self:active,
-    .btn-self.active {
-        background-color: #E91E63;
-        color: #fff
+    #submit_location1_name, #submit_location2_name{
+        height: 44px;
     }
     </style>
 </head>
 
-<body style="padding: 0px;">
+<body>
+<div class="leadGoMap" style="padding: 0px;">
     <div id="map"></div>
     <button type="button" id="leadgo" class="btn btn-theme" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin: 8px;">LeadGo</button>
     <button type="button" id="leaveRoom" class="btn btn-theme" style="margin: 8px; display: none;">離開頻道</button>
@@ -167,7 +163,149 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+</div>
+<div class="leadGoInfo home_view v2 simple-header p1">
+    <img style="position: absolute;" src="img/logo.png"/>
+    <div id="header" class="leadgo-header new">
+        <div style="display:none;" class="header--sm show-sm">
+            <a href="#" data-prevent-default class="link-reset burger--sm"> <i class="icon icon-reorder icon-rausch"></i> </a>
+            <div class="title--sm text-center">
+                <a href="#" class="header-belo"></a>
+            </div>
+            <div class="action--sm"></div>
+            <nav class="nav--sm"></nav>
+            <div class="search-modal-container"></div>
+        </div>
+        <div class="regular-header regular-header--new clearfix hide-sm" id="new-header">
+            <div class="comp pull-left">
+                <a href="/" class="hdr-btn link-reset belo-container"> <i class="icon icon-pos--lower icon-white icon-airbnb-alt h2 show-login"></i> <i class="icon icon-pos--lower icon-white icon-airbnb show-logout"></i> </a>
+            </div>
+            <div class="comp pull-right help-trigger-wrapper no-border  "> <a class="hdr-btn help-toggle link-reset" href="#"> 幫助 </a>
+                <div class="panel tooltip tooltip-top-right drop-down-menu help-dropdown">
+                    <div class="search-bar--help hide">
+                        <form action="/help/search" class="search-form--help menu-item">
+                            <div class="input-addon">
+                                <input type="text" placeholder="搜索幫助中心" autocomplete="off" name="q" class="input-stem" />
+                                <input type="hidden" name="search_from" value="hdr" />
+                                <i class="btn btn-primary icon icon-search input-suffix form-submit--help"></i> </div>
+                        </form>
+                    </div>
+                    <a href="/help" class="visit-helpcenter-cta help-center-link menu-item hide"> 訪問幫助中心 &#187; </a>
+                    <div class="loading"></div>
+                    <a href="/help" class="all_faqs link-reset menu-item hide"> 查看所有常見問題 </a> </div>
+            </div>
+            <div class="comp pull-right show-login">
+                <a class="no-crawl hdr-btn link-reset" rel="nofollow" data-href="/dashboard">
+                    <div class="media-photo media-round normal-line-height user-profile-image"></div>
+                    <div class="value_name hide"></div>
+                </a>
+                <div class="panel tooltip tooltip-top-right drop-down-menu avatar-tooltip--new"> <a href="#" class="no-crawl link-reset menu-item" data-href="/trips" rel="no-follow">您的旅程</a> <a href="#" class="no-crawl link-reset menu-item" data-href="/wishlists/popular" rel="no-follow">Wish Lists</a> <a href="#" class="no-crawl link-reset menu-item" data-href="/users/edit" rel="no-follow">編輯個人資料</a> <a href="/invite" class="link-reset menu-item">邀請好友</a> <a href="#" class="no-crawl link-reset menu-item" data-href="/users/notifications" rel="no-follow">帳戶設定</a> <a href="#" class="no-crawl link-reset menu-item" data-href="/logout" rel="no-follow">登出</a> </div>
+            </div>
+            <div class="comp pull-right show-login">
+                <a class="no-crawl hdr-btn link-reset text-white" href="#" data-href="/inbox" rel="nofollow">
+                    <div class="inbox-icon-container text-center"> <i class="icon icon-envelope h3 icon-pos--lower icon-white"> <span class="text-hide hide">Inbox</span> </i> <i class="alert-count text-center fade">0</i> </div>
+                </a>
+            </div>
+            <div class="comp pull-right show-logout"> <a data-signup-modal="" data-header-view="true" href="/signup_login?redirect_params[action]=show&amp;redirect_params[controller]=homepages" class="hdr-btn link-reset" rel="nofollow"> 註冊 </a> </div>
+            <div class="comp pull-right show-logout"> <a data-login-modal="" href="/login?redirect_params[action]=show&amp;redirect_params[controller]=homepages" class="hdr-btn link-reset" rel="nofollow"> 登入 </a> </div>
+        </div>
+    </div>
+    <div class="p1-hero-wrapper shift-with-hiw js-p1-hero">
+        <div id="hero">
+            <ul class="list-unstyled" id="slideshow">
+                <li class="active"> <img alt="" src="https://farm4.staticflickr.com/3696/9071715381_503a07ce90_b.jpg" width="100%" /> </li>
+            </ul>
+        </div>
+        <div class="search-area text-center">
+            <div class="va-container va-container-v va-container-h">
+                <div class="intro-area va-middle">
+                    <h1 id='tagline' class='uppercase text-jumbo text-contrast row-space-1'> Lead Go </h1>
+                    <div class="col-sm-12 col-center">
+                        <div id='subtitle' class="h4 text-contrast row-space-4"> 不要浪費你的時間在聯繫。 </div>
+                        <a href="#" class="btn hide-sm btn-contrast btn-large btn-semi-transparent how-it-works"> 如何使用跟車系統 </a> </div>
+                    <div class="p1-hero-search-form">
+                        <div class="col-12">
+                                <div class="search-form-input-wrapper">
+                                    <div class="location-wrapper"><span class="input-placeholder-group"><input type="text" class="form-inline location input-large input-contrast" value="" placeholder="請輸入頻道名稱" id="submit_location1_name" ><input type="text" class="form-inline location input-large input-contrast" value="" placeholder="請輸入頻道名稱" id="submit_location2_name" ></span></div><span class="input-placeholder-group"></span>
+                                    <div class="select select-large">
+                                        <select id="guests" name="guests">
+                                         <option value="1">領頭車</option>
+                                         <option value="2">跟車者</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location2">加入</button>
+                                    <button type="submit" class="search-button form-inline btn btn-primary btn-large" id="submit_location1">創建</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="trust hide-sm"> </div>
+        <div id="footer" class="container-brand-dark footer-surround footer-container">
+            <div class="footer-content-container page-container-responsive">
+                <hr class="footer-divider row-space-top-8 row-space-4 hide-sm">
+                <div class="social-media text-center">
+                    <h5 class="row-space-4 hide-sm">關注我們</h5>
+                    <ul class="unstyled list-layout list-inline" itemscope itemtype="http://schema.org/Organization">
+                        <link itemprop="url" href="https://www.airbnb.com.tw">
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-facebook'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-google-plus'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-weibo'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-twitter'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-linkedin'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-youtube'></i> </a>
+                        </li>
+                        <li>
+                            <a href="#" class="link-contrast footer-icon-container" itemprop="sameAs" target="_blank"> <i class='icon footer-icon icon-instagram'></i> </a>
+                        </li>
+                    </ul>
+                    <div id="copyright" class="row-space-top-2 text-muted"> &copy; Sleepsleepwash, Inc. </div>
+                </div>
+            </div>
+        </div>
+</body>
+<script>
+$(function() {
+    $('.leadGoMap').hide();
+    $('.leadGoInfo').show();
+    // $('#submit_location1').on('click', function(){
+    //     $('.leadGoMap').show();
+    //     $('.leadGoInfo').hide();
+    // })
+    // $('#submit_location2').on('click', function(){
+    //     $('.leadGoMap').show();
+    //     $('.leadGoInfo').hide();
+    // })
+    $(".select").change(function() {
+        $(".select option:selected").each(function() {
+            if ($(this).val() == 1) {
+                $('#submit_location2').hide();
+                $('#submit_location2_name').hide();
+                $('#submit_location1').show();
+                $('#submit_location1_name').show();
+            } else {
+                $('#submit_location1').hide();
+                $('#submit_location1_name').hide();
+                $('#submit_location2').show();
+                $('#submit_location2_name').show();
+            }
+        });
+    }).trigger("change");
+});
+</script>
+<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
     <script type="text/javascript">
     var socket = io.connect('http://10.0.2.18:9000/'),
         leaderJson;
@@ -280,13 +418,11 @@
     };
     legend.addTo(map);
 
-    $(function() {
-        $('#leadgo').click();
-    });
-
-    document.getElementById('create-channel').addEventListener("click", function() {
-        var name = document.getElementById('create-channel-name').value;
+    document.getElementById('submit_location1').addEventListener("click", function() {
+        var name = document.getElementById('submit_location1_name').value;
         if (name.trim() !== '') {
+            $('.leadGoMap').show();
+            $('.leadGoInfo').hide();
             document.getElementById('leadgo').style.display = 'none';
             document.getElementById('leaveRoom').style.display = '';
             document.body.style.backgroundColor = '#009688';
@@ -316,9 +452,11 @@
         }
     });
 
-    document.getElementById('join-channel').addEventListener("click", function() {
-        var name = document.getElementById('join-channel-name').value;
+    document.getElementById('submit_location2').addEventListener("click", function() {
+        var name = document.getElementById('submit_location2_name').value;
         if (name.trim() !== '') {
+            $('.leadGoMap').show();
+            $('.leadGoInfo').hide();
             document.getElementById('leadgo').style.display = 'none';
             document.getElementById('leaveRoom').style.display = '';
             document.body.style.backgroundColor = '#E91E63';
@@ -358,8 +496,7 @@
         leader.clearLayers();
         legend._container.style.display = 'none';
         clearInterval(leaderJson);
+        window.location.href = 'template.html';
     });
     </script>
-</body>
-
 </html>
