@@ -116,14 +116,20 @@
         margin-right: 8px;
         opacity: 0.7;
     }
+    .search-button{
+        height: 44px;
+    }
+    #submit_location1_name, #submit_location2_name{
+        height: 44px;
+    }
     </style>
 </head>
 
 <body>
 <div class="leadGoMap" style="padding: 0px;">
     <div id="map"></div>
-    <button type="button" id="leadgo" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin: 8px;">LeadGo</button>
-    <button type="button" id="leaveRoom" class="btn btn-primary" style="margin: 8px; display: none;">離開頻道</button>
+    <button type="button" id="leadgo" class="btn btn-theme" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin: 8px;">LeadGo</button>
+    <button type="button" id="leaveRoom" class="btn btn-theme" style="margin: 8px; display: none;">離開頻道</button>
     <div id="dialog-character" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -157,12 +163,11 @@
             </div>
         </div>
     </div>
-    
 </div>
 <div class="leadGoInfo home_view v2 simple-header p1">
     <img style="position: absolute;" src="img/logo.png"/>
     <div id="header" class="leadgo-header new">
-        <div class="header--sm show-sm">
+        <div style="display:none;" class="header--sm show-sm">
             <a href="#" data-prevent-default class="link-reset burger--sm"> <i class="icon icon-reorder icon-rausch"></i> </a>
             <div class="title--sm text-center">
                 <a href="#" class="header-belo"></a>
@@ -236,158 +241,9 @@
                 </div>
             </div>
         </div>
-<!--         <div class="panel panel-dark">
-            <div id="discovery-container">
-                <div class="discovery-section hide page-container-responsive page-container-no-padding" id="discovery-saved-searches">
-                    <div class="discovery-tiles">
-                        <div class="homepage-module"></div>
-                    </div>
-                </div>
-                <div class="discovery-section hide page-container-responsive page-container-no-padding" id="weekend-recommendations"> </div>
-                <div class="discovery-section page-container-responsive page-container-no-padding row-space-6" id="discover-recommendations">
-                    <div class="section-intro text-center row-space-6 row-space-top-8">
-                        <h2 class="row-space-1 strong"> 探索世界 </h2>
-                        <p class='text-lead'> 搜羅全球熱門目的地 </p>
-                    </div>
-                    <div class="discovery-tiles">
-                        <div class="homepage-module">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-12 rm-padding-sm">
-                                    <div class="discovery-card rm-padding-sm row-space-4  discovery-card-blank" style="" sm-img-url="">
-                                        <div class="va-container va-container-v va-container-h">
-                                            <div class="va-middle text-center text-contrast"> <i class="icon icon-picture icon-size-4 discovery-loading-icon"></i> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 rm-padding-sm row-space-4">
-                                    <div class="discovery-card-blank">
-                                        <div class="">
-                                            <div class="discovery-card">
-                                                <div class="va-container va-container-v va-container-h">
-                                                    <div class="va-middle text-center"> <i class="icon icon-picture icon-size-4
-                discovery-loading-icon"></i> </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 rm-padding-sm ">
-                                    <div class="discovery-card rm-padding-sm row-space-4  discovery-card-blank" style="" sm-img-url="">
-                                        <div class="va-container va-container-v va-container-h">
-                                            <div class="va-middle text-center text-contrast"> <i class="icon icon-picture icon-size-4 discovery-loading-icon"></i> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 rm-padding-sm hide-sm">
-                                    <div class="discovery-card rm-padding-sm row-space-4  discovery-card-blank" style="" sm-img-url="">
-                                        <div class="va-container va-container-v va-container-h">
-                                            <div class="va-middle text-center text-contrast"> <i class="icon icon-picture icon-size-4 discovery-loading-icon"></i> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 rm-padding-sm hide-sm">
-                                    <div class="discovery-card rm-padding-sm row-space-4  discovery-card-blank" style="" sm-img-url="">
-                                        <div class="va-container va-container-v va-container-h">
-                                            <div class="va-middle text-center text-contrast"> <i class="icon icon-picture icon-size-4 discovery-loading-icon"></i> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12 rm-padding-sm row-space-4">
-                                    <div class="discovery-card-blank">
-                                        <div class="">
-                                            <div class="discovery-card">
-                                                <div class="va-container va-container-v va-container-h">
-                                                    <div class="va-middle text-center"> <i class="icon icon-picture icon-size-4
-                discovery-loading-icon"></i> </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-8 col-md-12 hide-sm rm-padding-sm">
-                                    <div class="discovery-card rm-padding-sm row-space-4  discovery-card-blank" style="" sm-img-url="">
-                                        <div class="va-container va-container-v va-container-h">
-                                            <div class="va-middle text-center text-contrast"> <i class="icon icon-picture icon-size-4 discovery-loading-icon"></i> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 hide-sm rm-padding-sm col-switch col-md-push-6 col-lg-push-0">
-                                    <div class="discovery-card rm-padding-sm row-space-4  discovery-card-blank" style="" sm-img-url="">
-                                        <div class="va-container va-container-v va-container-h">
-                                            <div class="va-middle text-center text-contrast"> <i class="icon icon-picture icon-size-4 discovery-loading-icon"></i> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 hide-sm rm-padding-sm ">
-                                    <div class="discovery-card rm-padding-sm row-space-4  discovery-card-blank" style="" sm-img-url="">
-                                        <div class="va-container va-container-v va-container-h">
-                                            <div class="va-middle text-center text-contrast"> <i class="icon icon-picture icon-size-4 discovery-loading-icon"></i> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 hide-sm rm-padding-sm ">
-                                    <div class="discovery-card rm-padding-sm row-space-4  discovery-card-blank" style="" sm-img-url="">
-                                        <div class="va-container va-container-v va-container-h">
-                                            <div class="va-middle text-center text-contrast"> <i class="icon icon-picture icon-size-4 discovery-loading-icon"></i> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
         <div class="trust hide-sm"> </div>
         <div id="footer" class="container-brand-dark footer-surround footer-container">
             <div class="footer-content-container page-container-responsive">
-                <div class="row row-condensed">
-                    <div class="col-md-2 col-md-offset-1 hide-sm">
-                        <h5>公司</h5>
-                        <ul class="unstyled list-layout">
-                            <li><a href="#" class="link-contrast">關於</a></li>
-                            <li><a href="#" class="link-contrast">工作機會</a></li>
-                            <li><a href="#" class="link-contrast">傳媒</a></li>
-                            <li><a href="#" class="link-contrast">Blog</a></li>
-                            <li><a href="#" class="link-contrast">幫助</a></li>
-                            <li><a href="#" class="link-contrast">政策</a></li>
-                            <li><a href="#" class="link-contrast">災難響應</a></li>
-                            <li><a href="#" class="link-contrast">服務條款與私隱聲明</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-2 hide-sm">
-                        <h5>探索</h5>
-                        <ul class="unstyled list-layout">
-                            <li><a href="#" class="link-contrast">信任與安全</a></li>
-                            <li><a href="#" class="link-contrast">邀請好友</a></li>
-                            <li><a href="#" class="link-contrast">Airbnb 精選</a></li>
-                            <li><a href="#" class="link-contrast">手機功能版</a></li>
-                            <li><a href="#" class="link-contrast">支持紐約市</a></li>
-                            <li><a href="#" class="link-contrast">商務差旅</a></li>
-                            <li><a href="#" class="link-contrast">網站地圖</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-2 hide-sm">
-                        <h5>出租</h5>
-                        <ul class="unstyled list-layout">
-                            <li> <a href="#" class="link-contrast">為何出租?</a></li>
-                            </li>
-                            <li><a href="#" class="link-contrast">好客之道</a></li>
-                            <li><a href="#" class="link-contrast">房東義務</a></li>
-                            <li><a href="#" class="link-contrast">居家安全</a></li>
-                            <li><a href="#" class="link-contrast">故事</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-12 row-space-4 row-space-top-4 show-sm">
-                    <ul class="unstyled list-layout list-inline text-center h5">
-                        <li><a href="#" class="link-contrast">關於</a></li>
-                        <li><a href="#" class="link-contrast">工作機會</a></li>
-                        <li><a href="#" class="link-contrast">傳媒</a></li>
-                        <li><a href="#" class="link-contrast">Blog</a></li>
-                        <li><a href="#" class="link-contrast">服務條款與私隱聲明</a></li>
-                    </ul>
-                </div>
                 <hr class="footer-divider row-space-top-8 row-space-4 hide-sm">
                 <div class="social-media text-center">
                     <h5 class="row-space-4 hide-sm">關注我們</h5>
@@ -424,14 +280,14 @@
 $(function() {
     $('.leadGoMap').hide();
     $('.leadGoInfo').show();
-    $('#submit_location1').on('click', function(){
-        $('.leadGoMap').show(/*function(){$('#leadgo').click();}*/);
-        $('.leadGoInfo').hide();
-    })
-    $('#submit_location2').on('click', function(){
-        $('.leadGoMap').show(/*function(){$('#leadgo').click();}*/);
-        $('.leadGoInfo').hide();
-    })
+    // $('#submit_location1').on('click', function(){
+    //     $('.leadGoMap').show();
+    //     $('.leadGoInfo').hide();
+    // })
+    // $('#submit_location2').on('click', function(){
+    //     $('.leadGoMap').show();
+    //     $('.leadGoInfo').hide();
+    // })
     $(".select").change(function() {
         $(".select option:selected").each(function() {
             if ($(this).val() == 1) {
@@ -451,7 +307,12 @@ $(function() {
 </script>
 <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
     <script type="text/javascript">
-    var socket, leaderJson;
+    var socket = io.connect('http://10.0.2.18:9000/'),
+        leaderJson;
+    socket.on('error', function(data) {
+        route.clearLayers();
+        clearInterval(routeEvent);
+    });
     var map = L.map('map', {
         zoomControl: false
     }).setView([25.043964, 121.51850], 12);
@@ -525,22 +386,14 @@ $(function() {
     });
     // setInterval(function() {map.locate();}, 1000);
     var temp = [25.043964, 121.51850];
+    var routeEvent;
 
     function startRoute(roomName) {
-        if (roomName) {
-            setInterval(function() {
-                temp[0] += getRandomArbitrary(-0.01, 0.01);
-                temp[1] += getRandomArbitrary(-0.01, 0.01);
-
-                changeRoute(temp);
-            }, 1000);
-        } else {
-            setInterval(function() {
-                temp[0] += getRandomArbitrary(-0.01, 0.01);
-                temp[1] += getRandomArbitrary(-0.01, 0.01);
-                changeRoute(temp);
-            }, 1000);
-        }
+        routeEvent = setInterval(function() {
+            temp[0] += getRandomArbitrary(-0.01, 0.01);
+            temp[1] += getRandomArbitrary(-0.01, 0.01);
+            changeRoute(temp);
+        }, 1000);
     }
 
     function getRandomArbitrary(min, max) {
@@ -565,22 +418,25 @@ $(function() {
     };
     legend.addTo(map);
 
-    $(function() {
-        // $('#leadgo').click();
-    });
-
     document.getElementById('submit_location1').addEventListener("click", function() {
         var name = document.getElementById('submit_location1_name').value;
         if (name.trim() !== '') {
+            $('.leadGoMap').show();
+            $('.leadGoInfo').hide();
             document.getElementById('leadgo').style.display = 'none';
             document.getElementById('leaveRoom').style.display = '';
             document.body.style.backgroundColor = '#009688';
+            document.getElementById('leadgo').className = 'btn btn-leader';
+            document.getElementById('leaveRoom').className = 'btn btn-leader';
             $('#dialog-character').modal('hide');
 
-            socket = io.connect('http://128.199.223.114:9000/');
+            socket.emit('create', {
+                room: name
+            });
             var count = route.getLayers().length;
             if (count == 0) {
                 startRoute(name);
+
             }
             leaderJson = setInterval(function() {
                 socket.emit('location', {
@@ -599,12 +455,15 @@ $(function() {
     document.getElementById('submit_location2').addEventListener("click", function() {
         var name = document.getElementById('submit_location2_name').value;
         if (name.trim() !== '') {
+            $('.leadGoMap').show();
+            $('.leadGoInfo').hide();
             document.getElementById('leadgo').style.display = 'none';
             document.getElementById('leaveRoom').style.display = '';
             document.body.style.backgroundColor = '#E91E63';
+            document.getElementById('leadgo').className = 'btn btn-self';
+            document.getElementById('leaveRoom').className = 'btn btn-self';
             $('#dialog-character').modal('hide');
 
-            socket = io.connect('http://128.199.223.114:9000/');
             socket.emit('join', {
                 room: name
             });
@@ -625,16 +484,19 @@ $(function() {
     });
 
     document.getElementById('leaveRoom').addEventListener("click", function() {
-        window.location.href = 'template.html';
         var name = document.getElementById('join-channel-name').value;
         document.getElementById('leadgo').style.display = '';
         document.getElementById('leaveRoom').style.display = 'none';
+        document.body.style.backgroundColor = '#03A9F4';
+        document.getElementById('leadgo').className = 'btn btn-theme';
+        document.getElementById('leaveRoom').className = 'btn btn-theme';
         socket.emit('leave', {
             room: name
         });
         leader.clearLayers();
         legend._container.style.display = 'none';
         clearInterval(leaderJson);
+        window.location.href = 'template.html';
     });
     </script>
 </html>
