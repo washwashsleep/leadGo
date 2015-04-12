@@ -85,13 +85,55 @@
         margin-right: 8px;
         opacity: 0.7;
     }
+    
+    .btn-theme {
+        border-color: #03A9F4;
+        background-color: #fff;
+        color: #03A9F4
+    }
+    
+    .btn-theme:hover,
+    .btn-theme:focus,
+    .btn-theme:active,
+    .btn-theme.active {
+        background-color: #03A9F4;
+        color: #fff
+    }
+    
+    .btn-leader {
+        border-color: #009688;
+        background-color: #fff;
+        color: #009688
+    }
+    
+    .btn-leader:hover,
+    .btn-leader:focus,
+    .btn-leader:active,
+    .btn-leader.active {
+        background-color: #009688;
+        color: #fff
+    }
+    
+    .btn-self {
+        border-color: #E91E63;
+        background-color: #fff;
+        color: #E91E63
+    }
+    
+    .btn-self:hover,
+    .btn-self:focus,
+    .btn-self:active,
+    .btn-self.active {
+        background-color: #E91E63;
+        color: #fff
+    }
     </style>
 </head>
 
 <body style="padding: 0px;">
     <div id="map"></div>
-    <button type="button" id="leadgo" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin: 8px;">LeadGo</button>
-    <button type="button" id="leaveRoom" class="btn btn-primary" style="margin: 8px; display: none;">離開頻道</button>
+    <button type="button" id="leadgo" class="btn btn-theme" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin: 8px;">LeadGo</button>
+    <button type="button" id="leaveRoom" class="btn btn-theme" style="margin: 8px; display: none;">離開頻道</button>
     <div id="dialog-character" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -127,7 +169,12 @@
     </div>
     <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
     <script type="text/javascript">
-    var socket, leaderJson;
+    var socket = io.connect('http://10.0.2.18:9000/'),
+        leaderJson;
+    socket.on('error', function(data) {
+        route.clearLayers();
+        clearInterval(routeEvent);
+    });
     var map = L.map('map', {
         zoomControl: false
     }).setView([25.043964, 121.51850], 12);
@@ -201,22 +248,14 @@
     });
     // setInterval(function() {map.locate();}, 1000);
     var temp = [25.043964, 121.51850];
+    var routeEvent;
 
     function startRoute(roomName) {
-        if (roomName) {
-            setInterval(function() {
-                temp[0] += getRandomArbitrary(-0.01, 0.01);
-                temp[1] += getRandomArbitrary(-0.01, 0.01);
-
-                changeRoute(temp);
-            }, 1000);        
-        } else {
-            setInterval(function() {
-                temp[0] += getRandomArbitrary(-0.01, 0.01);
-                temp[1] += getRandomArbitrary(-0.01, 0.01);
-                changeRoute(temp);
-            }, 1000);
-        }
+        routeEvent = setInterval(function() {
+            temp[0] += getRandomArbitrary(-0.01, 0.01);
+            temp[1] += getRandomArbitrary(-0.01, 0.01);
+            changeRoute(temp);
+        }, 1000);
     }
 
     function getRandomArbitrary(min, max) {
@@ -251,12 +290,17 @@
             document.getElementById('leadgo').style.display = 'none';
             document.getElementById('leaveRoom').style.display = '';
             document.body.style.backgroundColor = '#009688';
+            document.getElementById('leadgo').className = 'btn btn-leader';
+            document.getElementById('leaveRoom').className = 'btn btn-leader';
             $('#dialog-character').modal('hide');
 
-            socket = io.connect('http://128.199.223.114:9000/');
+            socket.emit('create', {
+                room: name
+            });
             var count = route.getLayers().length;
             if (count == 0) {
                 startRoute(name);
+
             }
             leaderJson = setInterval(function() {
                 socket.emit('location', {
@@ -278,9 +322,10 @@
             document.getElementById('leadgo').style.display = 'none';
             document.getElementById('leaveRoom').style.display = '';
             document.body.style.backgroundColor = '#E91E63';
+            document.getElementById('leadgo').className = 'btn btn-self';
+            document.getElementById('leaveRoom').className = 'btn btn-self';
             $('#dialog-character').modal('hide');
 
-            socket = io.connect('http://128.199.223.114:9000/');
             socket.emit('join', {
                 room: name
             });
@@ -304,6 +349,9 @@
         var name = document.getElementById('join-channel-name').value;
         document.getElementById('leadgo').style.display = '';
         document.getElementById('leaveRoom').style.display = 'none';
+        document.body.style.backgroundColor = '#03A9F4';
+        document.getElementById('leadgo').className = 'btn btn-theme';
+        document.getElementById('leaveRoom').className = 'btn btn-theme';
         socket.emit('leave', {
             room: name
         });
