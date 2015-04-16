@@ -384,16 +384,17 @@ $(function() {
             changeRoute(e.latlng);
         }
     });
-    // setInterval(function() {map.locate();}, 1000);
+    //setInterval(function() {map.locate();}, 1000);
     var temp = [25.043964, 121.51850];
     var routeEvent;
 
     function startRoute(roomName) {
-        routeEvent = setInterval(function() {
+        /*routeEvent = setInterval(function() {
             temp[0] += getRandomArbitrary(-0.01, 0.01);
             temp[1] += getRandomArbitrary(-0.01, 0.01);
             changeRoute(temp);
-        }, 1000);
+        }, 1000);*/
+        routeEvent = setInterval(function() {map.locate();}, 1000);
     }
 
     function getRandomArbitrary(min, max) {
