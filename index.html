@@ -381,7 +381,7 @@ $(function() {
     }
     map.on('locationfound', function(e) {
         var count = route.getLayers().length;
-        if (route.getLayers()[count - 1].getLatLng().distanceTo(e.latlng) > 10) {
+        if ((route.getLayers()[count - 1].getLatLng().distanceTo(e.latlng) > 10 && count > 0) || count == 0) {
             changeRoute(e.latlng);
         }
     });
